@@ -20,17 +20,11 @@
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
         
-        <style>
-        section cite {
-            font-style: italic;
-        }
+<!--
+        <script src="customjs.js"></script>
+-->
+        <link rel="stylesheet" href="customcss.css">
         
-        .todo {
-            color: red;
-            font-weight: bold;
-        }
-        </style>
-
 		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
 		<script>
 			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
@@ -48,11 +42,13 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>Implementing Live HTML Editing</h1>
-                    <h3>JSConf.eu 2013</h3>
-					<h3>New in Brackets Sprint 31</h3>
+					<h1>Building Live HTML and Omnisicent Debuggers</h1>
+                    <h3>JSConf.eu 2000</h3>
 					<p>
 						<small><a href="http://blueskyonmars.com/">Kevin Dangoor, Adobe</a> / <a href="http://twitter.com/dangoor">@dangoor</a>, <a href="https://plus.google.com/+KevinDangoor">+KevinDangoor</a></small>
+					</p>
+					<p>
+						<small><a href="http://blueskyonmars.com/">Peter Flynn, Adobe</a> / <a href="http://twitter.com/knownissues">@knownissues</a></small>
 					</p>
 				</section>
                 
@@ -74,8 +70,8 @@
                 </section>
                 
                 <section>
-                    <h2>"BULD" was a starting point</h2>
-                    <div><cite>"Detecting Changes in XML Documents"</cite> Cobéna and Marian</div>
+                    <h2>"BULD" was a Starting Point</h2>
+                    <div><cite class="mycite">"Detecting Changes in XML Documents"</cite> by Cobéna and Marian</div>
                     <blockquote>[O]ur algorithm has to be very efficient in terms
 of speed and memory space even at the cost of some loss of “quality”. Also, it considers, besides insertions, deletions and updates (standard in diffs), a
 move operation on subtrees that is essential in the context of XML.</blockquote>
@@ -84,12 +80,13 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 <section>
                     <h2>The Big Difference</h2>
                     <div>We can identify elements thanks to CodeMirror's marks.</div>
-                    <div class="todo">screenshot/diagram</div>
+                    <img src="marks.png" style="width: 100%">
                 </section>
                 
                 <section>
-                    <h2>The basic process</h2>
+                    <h2>The Basic Process</h2>
                     <ol>
+                        <li>Try to find the affected part of the tree</li>
                         <li>Tokenize the document</li>
                         <li>Generate a list of edits</li>
                         <li>Send the edits to the browser</li>
@@ -98,11 +95,34 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 </section>
                 
                 <section>
+                    <h2>Incremental or Full?</h2>
+                    <pre><code data-trim>        if (changeList && !changeList.next) {
+    if (!isDangerousEdit(changeList.text) && !isDangerousEdit(changeList.removed)) {
+        var startMark = _getMarkerAtDocumentPos(editor, changeList.from, true);
+        if (startMark) {
+            var range = startMark.find();
+            if (range) {
+                text = editor._codeMirror.getRange(range.from, range.to);
+                this.changedTagID = startMark.tagID;
+                startOffsetPos = range.from;
+                startOffset = editor._codeMirror.indexFromPos(startOffsetPos);
+                this.isIncremental = true;
+            }
+        }
+    }
+}
+</code></pre>
+                </section>
+                
+                <section>
+                    <h2>Subtrees</h2>
+                    <img style="width: 100%" src="marks.png">
+                </section>
+                
+                <section>
                     <h2>Tokenizing</h2>
                     <div>Based on <a href="https://github.com/fb55/htmlparser2">https://github.com/fb55/htmlparser2</a></div>
                     <ol>
-                        <li>Will the edit change the structure?</li>
-                        <li>If not, just work on the subtree (get it from the marks)</li>
                         <li>Read the tokens, if it's invalid stop updating until it becomes valid</li>
                         <li>As tokens are read, tags are matched up with the marks to assign IDs to them</li>
                         <li>Build a "Simple DOM"</li>
@@ -110,6 +130,163 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                     </ol>
                 </section>
                 
+                <section>
+                    <h2>Hashes</h2>
+                    <pre><code data-trim>        update: function () {
+            if (this.isElement()) {
+                var i,
+                    subtreeHashes = "",
+                    childHashes = "",
+                    child;
+                for (i = 0; i &lt; this.children.length; i++) {
+                    child = this.children[i];
+                    if (child.isElement()) {
+                        childHashes += String(child.tagID);
+                        subtreeHashes += String(child.tagID) + child.attributeSignature + child.subtreeSignature;
+                    } else {
+                        childHashes += child.textSignature;
+                        subtreeHashes += child.textSignature;
+                    }
+                }
+                this.childSignature = MurmurHash3.hashString(childHashes, childHashes.length, seed);
+                this.subtreeSignature = MurmurHash3.hashString(subtreeHashes, subtreeHashes.length, seed);
+            } else {
+                this.textSignature = MurmurHash3.hashString(this.content, this.content.length, seed);
+            }
+        },
+</code></pre>
+                </section>
+                
+                <section>
+                    <h2>Edit Example</h2>
+                    <p>
+                        Hi, JSConf.
+                    </p>
+                    <p>
+                        <em>What will this do?</em>
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Simple DOM</h2>
+                    <center>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element" colspan="3">&lt;p&gt; <span class="tagid">4</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"Edit Example"</td>
+                                <td>&nbsp;</td>
+                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td>&nbsp;</td>
+                                                                                                   <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">&nbsp;</td>
+                                <td class="text">"What will this do?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </center>
+                </section>
+                
+                <section>
+                    <h2>Simple DOM (Changing)</h2>
+                    <center>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element deleting" colspan="3">&lt;p&gt; <span class="tagid">4</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"Edit Example"</td>
+                                <td>&nbsp;</td>
+                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td>&nbsp;</td>
+                                                                                                   <td class="text">"\n&nbsp;"</td>
+                                <td class="element moving">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">&nbsp;</td>
+                                <td class="text">"What will this do?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </center>
+                </section>
+
+                <section>
+                    <h2>Simple DOM (New)</h2>
+                    <center>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element" colspan="4">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"Edit Example"</td>
+                                <td>&nbsp;</td>
+                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td class="element" colspan="2">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">&nbsp;</td>
+                                <td class="text" colspan="2">"What will this do?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </center>
+                </section>
+                
+                <section id="example">
+                    <h2>Edit Example</h2>
+                    <p>
+                        Hi, JSConf.
+                    </p>
+                    <p>
+                        <em>What will this do?</em>
+                    </p>
+                </section>
+
                 <section>
                     <h2>Diff Generation</h2>
                     <div>Generate edits to go from <b>old</b> to <b>new</b>.</div>
@@ -137,7 +314,7 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 </section>
                 
                 <section>
-                    <h2>Compare child-by-child</h2>
+<!--
                     <pre><code data-trim="">        // Loop through the current and old children, comparing them one by one.
 while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
     newChild = newChildren[newIndex];
@@ -157,6 +334,70 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
         continue;
     }
 </code></pre>
+-->
+                    <p>Old</p>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element" colspan="3">&lt;p&gt; <span class="tagid">4</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"Edit Example"</td>
+                                <td>&nbsp;</td>
+                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td>&nbsp;</td>
+                                                                                                   <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">&nbsp;</td>
+                                <td class="text">"What will this do?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p>New</p>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                                <td class="element" colspan="4">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"Edit Example"</td>
+                                <td>&nbsp;</td>
+                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td class="element" colspan="2">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text">"\n&nbsp;"</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">&nbsp;</td>
+                                <td class="text" colspan="2">"What will this do?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </section>
                 
                 <section>
@@ -183,33 +424,6 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                 </section>
                 
                 <section>
-                    <h2>Kinds of Edits</h2>
-                    <ul>
-                        <li>elementInsert</li>
-                        <li>elementDelete</li>
-                        <li>elementMove</li>
-                        <li>textInsert</li>
-                        <li>textDelete</li>
-                        <li>textReplace</li>
-                        <li>attrDelete</li>
-                        <li>attrChange</li>
-                        <li>attrAdd</li>
-                        <li>rememberNodes</li>                    
-                    </ul>
-                </section>
-                
-                <section>
-                    <h2>Edit Example</h2>
-                    <p>
-                        Hi, JSConf.
-                    </p>
-                    <p>
-                        <em>What will this do?</em>
-                    </p>
-                    
-                </section>
-                
-                <section>
                     <h2>Performance</h2>
                     <div>You know what they say about measurement?</div>
                     <div style="margin-top: 1em">Tokenizing, hash computation, diff generation all seem expensive.</div>
@@ -232,6 +446,7 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                 
                 <section>
                     <h2>Sometimes with good reason</h2>
+                    <img src="marks.png" style="width: 100%">
                     <div>Calculating mark positions overwhelmed everything else.</div>
                 </section>
                 
