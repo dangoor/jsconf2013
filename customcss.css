@@ -1,0 +1,36 @@
+section cite.mycite {
+    font-style: italic;
+}
+
+.todo {
+    color: red;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+}
+
+table.simpledom td.element {
+    background-color: #cca;
+    text-align: center;
+    color: #110e62;
+}
+
+td.text {
+    background-color: #aba;
+    color: #110e62;
+    padding: 2px;
+}
+
+td.deleting {
+    border: 2px solid red;
+}
+
+td.moving {
+    border: 2px solid yellow;
+}
+
+#twotrees .selected {
+    border: 1px solid red;
+}

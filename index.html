@@ -19,10 +19,8 @@
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
-        
-<!--
+        <script src="thirdparty/jquery-2.0.1.js"></script>
         <script src="customjs.js"></script>
--->
         <link rel="stylesheet" href="customcss.css">
         
 		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
@@ -78,7 +76,7 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 </section>
                 
                 <section>
-                    <h2>The Big Difference</h2>
+                    <h2>The Biggest Difference</h2>
                     <div>We can identify elements thanks to CodeMirror's marks.</div>
                     <img src="marks.png" style="width: 100%">
                 </section>
@@ -310,10 +308,11 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                     <ul>
                         <li>Text nodes</li>
                         <li>Moves</li>
+                        <li>Large structure changes</li>
                     </ul>
                 </section>
                 
-                <section>
+                <section id="twotrees">
 <!--
                     <pre><code data-trim="">        // Loop through the current and old children, comparing them one by one.
 while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
@@ -342,13 +341,13 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                                 <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
                             </tr>
                             <tr>
-                                <td class="text">"\n&nbsp;"</td>
-                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
-                                <td class="text">"\n&nbsp;"</td>
-                                <td class="element">&lt;p&gt; <span class="tagid">3</span></td>
-                                <td class="text">"\n&nbsp;"</td>
-                                <td class="element" colspan="3">&lt;p&gt; <span class="tagid">4</span></td>
-                                <td class="text">"\n&nbsp;"</td>
+                                <td class="text row1">"\n&nbsp;"</td>
+                                <td class="element row1">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text row1">"\n&nbsp;"</td>
+                                <td class="element row1">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text row1">"\n&nbsp;"</td>
+                                <td class="element row1" colspan="3">&lt;p&gt; <span class="tagid">4</span></td>
+                                <td class="text row1">"\n&nbsp;"</td>
                             </tr>
                             <tr>
                                 <td>
@@ -356,7 +355,7 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                                 </td>
                                 <td class="text">"Edit Example"</td>
                                 <td>&nbsp;</td>
-                                <td class="text">"\n       Hi, JSConf.\n     "</td>
+                                <td class="text row2">"\n       Hi, JSConf.\n     "</td>
                                 <td>&nbsp;</td>
                                                                                                    <td class="text">"\n&nbsp;"</td>
                                 <td class="element">&lt;em&gt; <span class="tagid">5</span></td>
@@ -376,11 +375,11 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                                 <td colspan="9" class="element">&lt;section&gt; <span class="tagid">1</span></td>
                             </tr>
                             <tr>
-                                <td class="text">"\n&nbsp;"</td>
-                                <td class="element">&lt;h2&gt; <span class="tagid">2</span></td>
-                                <td class="text">"\n&nbsp;"</td>
-                                <td class="element" colspan="4">&lt;p&gt; <span class="tagid">3</span></td>
-                                <td class="text">"\n&nbsp;"</td>
+                                <td class="text row1">"\n&nbsp;"</td>
+                                <td class="element row1">&lt;h2&gt; <span class="tagid">2</span></td>
+                                <td class="text row1">"\n&nbsp;"</td>
+                                <td class="element row1" colspan="4">&lt;p&gt; <span class="tagid">3</span></td>
+                                <td class="text row1">"\n&nbsp;"</td>
                             </tr>
                             <tr>
                                 <td>
@@ -388,9 +387,9 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                                 </td>
                                 <td class="text">"Edit Example"</td>
                                 <td>&nbsp;</td>
-                                <td class="text">"\n       Hi, JSConf.\n     "</td>
-                                <td class="element" colspan="2">&lt;em&gt; <span class="tagid">5</span></td>
-                                <td class="text">"\n&nbsp;"</td>
+                                <td class="text row2">"\n       Hi, JSConf.\n     "</td>
+                                <td class="element row2" colspan="2">&lt;em&gt; <span class="tagid">5</span></td>
+                                <td class="text row2">"\n&nbsp;"</td>
                             </tr>
                             <tr>
                                 <td colspan="4">&nbsp;</td>
