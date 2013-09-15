@@ -34,3 +34,40 @@ td.moving {
 #twotrees .selected {
     border: 1px solid red;
 }
+
+.reveal section img {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+.reveal .fullslide {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    max-height: none;
+}
+
+.inno-list {
+    color: #a0a0a0;
+}
+.inno-list div em {
+    font-style: normal;
+    font-weight: bold;
+    color: white;
+}
+#techstack td {
+    width: 30%;
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    padding: 20px;
+}
+.reveal .sandbox-shield {
+    background-color: rgba(0,0,0, 0.6);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 0;
+}

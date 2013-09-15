@@ -44,14 +44,44 @@
                 
 				<section data-state="codetheweb">
 					<h2>Building Live HTML and Omnisicent Debuggers</h2>
-                    <h3>JSConf.eu 2000</h3>
+                    <h3>JSConf.eu 2013</h3>
 					<p>
 						<small><a href="http://blueskyonmars.com/">Kevin Dangoor, Adobe</a> / <a href="http://twitter.com/dangoor">@dangoor</a>, <a href="https://plus.google.com/+KevinDangoor">+KevinDangoor</a></small>
 					</p>
 					<p>
-						<small><a href="http://blueskyonmars.com/">Peter Flynn, Adobe</a> / <a href="http://twitter.com/knownissues">@knownissues</a></small>
+						<small><a href="http://github.com/peterflynn">Peter Flynn, Adobe</a> / <a href="http://twitter.com/knownissues">@knownissues</a></small>
 					</p>
 				</section>
+                
+                <section>
+                    <img src="css/images/brackets_icon.svg" width="55%">
+                    <h2 class="fragment">Code Editor<span class="fragment" style="color: #28A9E1">?</span></h2>
+                </section>
+                
+                <section class="inno-list">
+                    <div style="position: absolute; left: 15em; top: 11.5em" class="fragment fade-out" data-fragment-index="1">Theseus</div>
+                    <div style="position: absolute; left: 15em; top: 11.5em" class="fragment" data-fragment-index="1"><em>Theseus</em></div>
+                    <div style="position: absolute; left: 11em; top: 4em">Instabug</div>
+                    <div style="position: absolute; left: 16em; top: 1em">Tern-driven code hints</div>
+                    <div style="position: absolute; left: 3.5em; top: 7.7em">CSS Live Development</div>
+                    <div style="position: absolute; left: 14em; top: 6em" class="fragment fade-out" data-fragment-index="1">HTML Live Development</div>
+                    <div style="position: absolute; left: 14em; top: 6em" class="fragment" data-fragment-index="1"><em>HTML Live Development</em></div>
+                    <div style="position: absolute; left: 1.5em; top: 5em">Live Highlight</div>
+                    <div style="position: absolute; left: 17em; top: 9em">Everyscrub</div>
+                    <div style="position: absolute; left: 12em; top: 14em">Markdown live preview</div>
+                    <div style="position: absolute; left: 1em; top: 14em">SVG live preview</div>
+                    <div style="position: absolute; left: 4em; top: 2.5em">Inline editors</div>
+                    <div style="position: absolute; left: 12px; top: 10.5em">Responsive design editing</div>
+                    <div style="position: absolute; left: 19em; top: 3em">PSD Lens</div>
+                    <div style="position: absolute; left: 0em; top: 0em">JavaScript hot replacement</div>
+                </section>
+                
+                <section>
+                    <h2>HTML Live Development</h2>
+                    <ul>
+                        <li>DEMO?</li>
+                    </ul>
+                </section>
                 
                 <section>
                     <h2>Constraining the Problem</h2>
@@ -124,7 +154,7 @@ move operation</em> on subtrees that is essential in the context of XML.</blockq
                     <h2>Tokenizing/Parsing</h2>
                     <div>Based on <a href="https://github.com/fb55/htmlparser2">https://github.com/fb55/htmlparser2</a></div>
                     <ol>
-                        <li>Read the tokens, if it's invalid stop updating until it becomes valid</li>
+                        <li>Read the tokens, if the doc is invalid stop updating until it becomes valid</li>
                         <li>As tokens are read, tags are matched up with the marks to assign IDs to them</li>
                         <li>Build a "Simple DOM"</li>
                         <li>Calculate hashes for text nodes, element attributes, child nodes, subtrees</li>
@@ -132,7 +162,29 @@ move operation</em> on subtrees that is essential in the context of XML.</blockq
                 </section>
                 
                 <section>
-                    <h2>Hashes</h2>
+                    <h2>Simple DOM</h2>
+                    <table class="simpledom">
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="element">&lt;p class="example"&gt; ID: <span class="tagid">1</span><br>attrSig: 812370188, childSig: 1654266372, subtreeSig: 1543130807</td>
+                            </tr>
+                            <tr>
+                                <td class="text">"Some text&nbsp;"<br> sig: -487627308</td>
+                                <td class="element">&lt;em&gt; ID: <span class="tagid">2</span><br>attrSig: 100177033, childSig: 1177450403, subtreeSig: 1177450403</td>
+                                <td class="text">"&nbsp;more text" <br>sig: 855807722</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td class="text">"emphasized text"<br>sig: -52577378</td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                </section>
+                
+                <section>
+                    <h2>Signatures</h2>
                     <pre><code data-trim>        update: function () {
             if (this.isElement()) {
                 var i,
@@ -164,12 +216,12 @@ move operation</em> on subtrees that is essential in the context of XML.</blockq
                         Hi, JSConf.
                     </p>
                     <p>
-                        <em>What will this do?</em>
+                        <em>We're going to merge these paragraphs.</em>
                     </p>
                 </section>
 
                 <section>
-                    <h2>Simple DOM</h2>
+                    <h2>Example Simple DOM</h2>
                     <center>
                     <table class="simpledom">
                         <tbody>
@@ -284,7 +336,7 @@ move operation</em> on subtrees that is essential in the context of XML.</blockq
                         Hi, JSConf.
                     </p>
                     <p>
-                        <em>What will this do?</em>
+                        <em>We're going to merge these paragraphs.</em>
                     </p>
                 </section>
 
@@ -422,27 +474,12 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                 
                 <section>
                     <h2>Performance</h2>
-                    <div>You know what they say about measurement?</div>
                     <div style="margin-top: 1em">Tokenizing/parsing, hash computation, diff generation all seem expensive.</div>
-                    <h3 style="margin-top: 0.1em">Nope.</h3>
+                    <h3 style="margin-top: 0.1em" class="fragment">Nope.</h3>
                 </section>
                 
                 <section>
-                    <h2>JavaScript can be slow...</h2>
-                    <pre><code>     function generateInstrumentedHTML(doc) {
-...
-         tags.forEach(function (tag) {
--            var insertIndex = tag.offset + tag.name.length + 1 + insertCount;
--            gen = gen.substr(0, insertIndex) + attrText + gen.substr(insertIndex);
--            insertCount += attrText.length;
-+            var insertIndex = tag.offset + tag.name.length + 1;
-+            gen += orig.substr(lastIndex, insertIndex - lastIndex) + attrText;
-+            lastIndex = insertIndex;
-</code></pre>
-                </section>
-                
-                <section>
-                    <h2>Sometimes with good reason</h2>
+                    <h2>The Bottleneck</h2>
                     <img src="marks.png" style="width: 100%">
                     <div>Calculating mark positions overwhelmed everything else.</div>
                 </section>
@@ -451,6 +488,228 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                     <h2>Read More</h2>
                     
                     <div><a href="https://github.com/adobe/brackets/wiki/Research:-HTML-DOM-Data-Structure">https://github.com/adobe/brackets/wiki/Research:-HTML-DOM-Data-Structure</a></div>
+                </section>
+                <section>
+                    <h2>Theseus</h2>
+                    <div class="fragment">
+                        <img src="css/images/tom-lieber.jpg">
+                        <p><a href="http://alltom.com">Tom Lieber</a>, MIT</p>
+                    </div>
+                </section>
+                
+                <section data-transition="none">
+                    <h2>Omniscient Debugging</h2> <!-- aka historical debugging -->
+                    <ul>
+                        <li class="fragment" data-fragment-index="1">Deep history of execution</li>
+                        <li class="fragment" data-fragment-index="2">Step backwards</li>
+                        <li class="fragment" data-fragment-index="3">Visualize entire history</li>
+                    </ul>
+                </section>
+                <section data-transition="none">
+                    <img src="css/images/bvictor.png">
+                </section>
+                <section data-transition="none">
+                    <img src="css/images/instabug_crop.png">
+                </section>
+                <section data-transition="none">
+                    <h2>Omniscient Debugging</h2>
+                    <ul>
+                        <li>Deep history of execution</li>
+                        <li>Step backwards</li>
+                        <li>Visualize entire history</li>
+                        <li>Queryable dataset</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h1>Demo</h1>
+                </section>
+                
+                <section>
+                    <div style="background-color: white">
+                        <p><img src="css/images/theseus-node.png"></p>
+                        <p><img src="css/images/theseus-chrome.png"></p>
+                        <!--<p><img src="css/images/theseus-br.png"></p>-->
+                    </div>
+                </section>
+                
+                <section>
+                    <h2>How Theseus Works</h2>
+                    <h3>Injected instrumentation</h3>
+                    <ul>
+                        <li><a href="http://esprima.org/">Esprima</a>
+                            + <a href="https://npmjs.org/package/falafel">Falafel</a>
+                            + modified JSHint</li> <!--(JSHint provides scope info)-->
+                        <li><a href="https://github.com/adobe-research/fondue">Fondue</a> instrumentation</li>
+                        <li>Serve up instrumented code</li>
+                        <li>Retrieve collected data in Brackets</li>
+                        <li>Visualize in Brackets UI</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2>Fondue Instrumentation</h2>
+                    <h3>Function entry/exit</h3>
+                    <pre><code data-trim data-noescape>
+function foo(x) {
+    <span class="fragment" data-fragment-index="1">theseus.traceEnter({id: "foo", arguments: [x], this: this});</span>
+    return x + 1;
+    <span class="fragment" data-fragment-index="1">theseus.traceExit({id: "foo"});</span>
+}
+                    </code></pre>
+                </section>
+                
+                <section>
+                    <h2>Fondue Instrumentation</h2>
+                    <h3>Tracing invocations to callers</h3>
+                    <pre><code data-trim>
+function foo(x) {
+    // Call #1
+    bar(x);
+    // Call #2
+    bar(x / 2);
+}
+                    </code></pre>
+                    <pre class="fragment" data-fragment-index="1"><code data-trim>
+function foo(x) {
+    // Call #1
+    theseus.traceFunCall("foo-bar1", {func: bar}, [x]);
+    // Call #2
+    theseus.traceFunCall("foo-bar2", {func: bar}, [x / 2]);
+}
+                    </code></pre>
+                    <div class="fragment" data-fragment-index="1">
+                        Records state so next traceEnter() knows where it came from
+                    </div>
+                </section>
+                
+                <section>
+                    <h2>Fondue Instrumentation</h2>
+                    <h3>Tracing *async* invocations</h3>
+                    <pre><code data-trim>
+function foo(url) {
+    $.get(url, function (data) {
+        // ...
+    });
+}
+                    </code></pre>
+                    <pre class="fragment" data-fragment-index="1"><code data-trim>
+function foo(url) {
+    $.get(url, theseus.wrapCallback("foo_1", function (data) {
+        // ...
+    }) );
+}
+                    </code></pre>
+                    <div class="fragment" data-fragment-index="1">
+                        Saves current foo() invocation in the wrapper so callback knows where it (asynchronously) came from
+                    </div>
+                </section>
+                
+                <section>
+                    <h2>Read More</h2>
+                    
+                    <div><a href="http://alltom.com/pages/instrumenting-javascript">http://alltom.com/pages/instrumenting-javascript</a></div>
+                    <div><a href="https://github.com/adobe-research/theseus">https://github.com/adobe-research/theseus</a></div>
+                    <div><a href="https://github.com/adobe-research/fondue">https://github.com/adobe-research/fondue</a></div>
+                </section>
+                
+                <section>
+                    <img src="css/images/brackets_icon.svg" width="55%">
+                    <h2>A Sandbox</h2>
+                </section>
+                
+                <section>
+                    <table id="techstack">
+                        <tr>
+                            <td><img src="css/images/Chromium%20product_logo_128.png"></td>
+                            <td><img src="css/images/Bootstrap.png" style="width: 120px"></td>
+                            <td><img src="css/images/CodeMirror%20logotype.png"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="css/images/nodejs_logo.png"></td>
+                            <td><img src="css/images/jquery_logo_color_onwhite.png"></td>
+                            <td><img src="css/images/LESS%20logo.png"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="css/images/mustache.png"></td>
+                            <td><img src="css/images/requireJS.png"></td>
+                            <td><img src="css/images/jasmine_logo.png"></td>
+                        </tr>
+                    </table>
+                </section>
+                
+                <section>
+                    <h2>Example: SVG live preview</h2>
+                    <pre><code data-trim>
+define(function (require, exports, module) {
+    "use strict";
+    
+    var DocumentManager = brackets.getModule("document/DocumentManager"),
+        PanelManager    = brackets.getModule("view/PanelManager"),
+        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils");
+    
+    var previewPanel, currentDoc;
+    
+    function updatePanel() {
+        // Update SVG display
+        var $svgParent = $(".svg-preview", previewPanel.$panel);
+        $svgParent.html(currentDoc.getText());
+        
+        var $svgRoot = $svgParent.children();
+        $svgParent.width($svgRoot.width());
+        $svgParent.height($svgRoot.height());
+        
+        // Update panel height
+        var panelHeight = $svgRoot.height() + 30;
+        if (panelHeight !== previewPanel.$panel.height()) {
+            previewPanel.$panel.height(panelHeight);
+            previewPanel.$panel.trigger("panelResizeUpdate");  // trigger editor resize
+        }
+    }
+    
+    function setPanel(newDoc) {
+        // Detach from last doc &amp; attach to new one
+        if (currentDoc) {
+            $(currentDoc).off("change", updatePanel);
+        }
+        currentDoc = newDoc;
+        
+        if (currentDoc) {
+            $(currentDoc).on("change", updatePanel);
+            previewPanel.show();
+            updatePanel();
+        } else {
+            previewPanel.hide();
+        }
+    }
+    
+    ExtensionUtils.loadStyleSheet(module, "svg-preview.css");
+    
+    // Create panel
+    var $panel = $("&lt;div id='svg-preview-panel' class='inline-widget'&gt;&lt;div class='svg-preview'&gt;&lt;/div&gt;&lt;/div&gt;");
+    previewPanel = PanelManager.createBottomPanel("svg-preview", $panel, 0);
+    
+    // Listen for editor switch
+    $(DocumentManager).on("currentDocumentChange", function () {
+        var newDoc = DocumentManager.getCurrentDocument();
+        if (newDoc &amp;&amp; newDoc.file.fullPath.match(/\.svg$/i)) {
+            setPanel(newDoc);
+        } else {
+            setPanel(null);
+        }
+    });
+});</code></pre>
+                </section>
+                
+                <section data-background="css/images/sandbox.jpg">
+                    <div class="sandbox-shield fragment">
+                        <p>
+                            <a href="http://blueskyonmars.com/">Kevin Dangoor, Adobe</a> / <a href="http://twitter.com/dangoor">@dangoor</a>, <a href="https://plus.google.com/+KevinDangoor">+KevinDangoor</a>
+                        </p>
+                        <p>
+                            <a href="http://github.com/peterflynn">Peter Flynn, Adobe</a> / <a href="http://twitter.com/knownissues">@knownissues</a>
+                        </p>
+                    </div>
                 </section>
 			</div>
 
