@@ -12,14 +12,14 @@ table {
 }
 
 table.simpledom td.element {
-    background-color: #cca;
+    background-color: #82838d;
     text-align: center;
-    color: #110e62;
+    color: #d8d8d9;
 }
 
 td.text {
-    background-color: #aba;
-    color: #110e62;
+    background-color: #6d776d;
+    color: #d8d8d9;
     padding: 2px;
 }
 

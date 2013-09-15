@@ -15,7 +15,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/theme/default.css">
+        <link rel="stylesheet" href="css/theme/codetheweb.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -39,8 +40,10 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Building Live HTML and Omnisicent Debuggers</h1>
+                <section data-state="codetheweb-logo"></section>
+                
+				<section data-state="codetheweb">
+					<h2>Building Live HTML and Omnisicent Debuggers</h2>
                     <h3>JSConf.eu 2000</h3>
 					<p>
 						<small><a href="http://blueskyonmars.com/">Kevin Dangoor, Adobe</a> / <a href="http://twitter.com/dangoor">@dangoor</a>, <a href="https://plus.google.com/+KevinDangoor">+KevinDangoor</a></small>
@@ -53,9 +56,9 @@
                 <section>
                     <h2>Constraining the Problem</h2>
                     <ul>
-                        <li>Update the page as the user types</li>
-                        <li>Do it quickly</li>
-                        <li>Try to replace a reasonably minimal part of the page</li>
+                        <li><em>Update the page</em> as the user types</li>
+                        <li>Do it <em>quickly</em></li>
+                        <li>Try to replace a <em>reasonably minimal</em> part of the page</li>
                     </ul>
                     
                     <h3 style="margin-top: 1em">How hard can it be?</h3>
@@ -64,15 +67,15 @@
                 <section>
                     <h2>HTML (or XML) Diff Research</h2>
                     <p>Daniel Ehrenberg wrote <a href="http://www.scribd.com/doc/14482474/XML-diff-survey">a paper</a> surveying the research:</p>
-                    <blockquote>A warning: All of the algorithms are fairly difficult to understand. I don’tunderstand all of them; it took me months to figure out the Zhang-Shasha algorithm.</blockquote>
+                    <blockquote>A warning: All of the <em>algorithms are fairly difficult to understand</em>. I don’tunderstand all of them; it took me months to figure out the Zhang-Shasha algorithm.</blockquote>
                 </section>
                 
                 <section>
                     <h2>"BULD" was a Starting Point</h2>
                     <div><cite class="mycite">"Detecting Changes in XML Documents"</cite> by Cobéna and Marian</div>
-                    <blockquote>[O]ur algorithm has to be very efficient in terms
-of speed and memory space even at the cost of some loss of “quality”. Also, it considers, besides insertions, deletions and updates (standard in diffs), a
-move operation on subtrees that is essential in the context of XML.</blockquote>
+                    <blockquote>[O]ur algorithm has to be very <em>efficient</em> in terms
+of speed and memory space even at the cost of <em>some loss of “quality”</em>. Also, it considers, besides insertions, deletions and updates (standard in diffs), <em>a
+move operation</em> on subtrees that is essential in the context of XML.</blockquote>
                 </section>
                 
                 <section>
@@ -85,7 +88,7 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                     <h2>The Basic Process</h2>
                     <ol>
                         <li>Try to find the affected part of the tree</li>
-                        <li>Tokenize the document</li>
+                        <li>Tokenize/parse the document</li>
                         <li>Generate a list of edits</li>
                         <li>Send the edits to the browser</li>
                         <li>Apply the edits</li>
@@ -118,7 +121,7 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 </section>
                 
                 <section>
-                    <h2>Tokenizing</h2>
+                    <h2>Tokenizing/Parsing</h2>
                     <div>Based on <a href="https://github.com/fb55/htmlparser2">https://github.com/fb55/htmlparser2</a></div>
                     <ol>
                         <li>Read the tokens, if it's invalid stop updating until it becomes valid</li>
@@ -299,11 +302,6 @@ move operation on subtrees that is essential in the context of XML.</blockquote>
                 
                 <section>
                     <h2>Generating Child Edits</h2>
-                    <div>You don't want to know.</div>
-                </section>
-                
-                <section>
-                    <h2>Generating Child Edits</h2>
                     <div>Gets complicated by:</div>
                     <ul>
                         <li>Text nodes</li>
@@ -425,7 +423,7 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
                 <section>
                     <h2>Performance</h2>
                     <div>You know what they say about measurement?</div>
-                    <div style="margin-top: 1em">Tokenizing, hash computation, diff generation all seem expensive.</div>
+                    <div style="margin-top: 1em">Tokenizing/parsing, hash computation, diff generation all seem expensive.</div>
                     <h3 style="margin-top: 0.1em">Nope.</h3>
                 </section>
                 
@@ -472,7 +470,7 @@ while (newIndex &lt; newChildren.length && oldIndex &lt; oldChildren.length) {
 				center: true,
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+				transition: Reveal.getQueryHash().transition || 'zoom', // default/cube/page/concave/zoom/linear/fade/none
 
 				// Optional libraries used to extend on reveal.js
 				dependencies: [
