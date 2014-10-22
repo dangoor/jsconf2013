@@ -4,8 +4,6 @@
     
     "use strict";
     
-    var state = 0;
-    
     $(function () {
         $("#twotrees .row1").hover(function (e) {
             console.log("H1");
